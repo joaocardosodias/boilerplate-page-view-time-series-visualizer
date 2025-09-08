@@ -4,13 +4,12 @@ import seaborn as sns
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
-# Import data (Make sure to parse dates. Consider setting index column to 'date'.)
+
 # Eu vou importar os dados do arquivo CSV e definir a coluna 'date' como índice
 # O parâmetro parse_dates converte a coluna 'date' para o formato datetime do pandas
 # Isso é importante porque facilita a manipulação de datas depois
 df = pd.read_csv('fcc-forum-pageviews.csv', parse_dates=['date'], index_col='date')
 
-# Clean data
 # Vou limpar os dados removendo os dias com visualizações nos 2,5% superiores ou inferiores
 # Isso vai ajudar a remover outliers que podem distorcer as visualizações
 # Uso o método quantile() para encontrar os valores que representam os percentis 2,5% e 97,5%
@@ -21,7 +20,7 @@ df = df[(df['value'] >= df['value'].quantile(0.025)) &
 
 
 def draw_line_plot():
-    # Draw line plot
+    
     # Vou criar um gráfico de linha simples mostrando as visualizações ao longo do tempo
     # O parâmetro figsize define o tamanho da figura em polegadas (largura, altura)
     # Uso uma figura grande para que os detalhes fiquem bem visíveis
@@ -39,12 +38,12 @@ def draw_line_plot():
     ax.set_xlabel('Date')  # Eixo X mostra as datas
     ax.set_ylabel('Page Views')  # Eixo Y mostra o número de visualizações
     
-    # Save image and return fig (don't change this part)
+    
     fig.savefig('line_plot.png')
     return fig
 
 def draw_bar_plot():
-    # Copy and modify data for monthly bar plot
+    
     # Vou fazer uma cópia para não modificar o dataframe original
     # Isso é uma boa prática para evitar efeitos colaterais indesejados
     df_bar = df.copy()
@@ -61,8 +60,8 @@ def draw_bar_plot():
     # O método unstack transforma o resultado em uma tabela onde as linhas são anos e as colunas são meses
     df_bar = df_bar.groupby(['year', 'month'])['value'].mean().unstack()
     
-    # Draw bar plot
-    # Crio uma figura com tamanho adequado para mostrar todas as barras
+   
+    
     fig, ax = plt.subplots(figsize=(10, 8))
     
     # Plotando o gráfico de barras
@@ -81,12 +80,12 @@ def draw_bar_plot():
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     ax.legend(title='Months', labels=months)  # Adiciono a legenda com título 'Months'
     
-    # Save image and return fig (don't change this part)
+    
     fig.savefig('bar_plot.png')
     return fig
 
 def draw_box_plot():
-    # Prepare data for box plots (this part is done!)
+    
     # Faço uma cópia do DataFrame original para não modificá-lo
     df_box = df.copy()
     # O método reset_index transforma o índice em uma coluna chamada 'date'
@@ -102,12 +101,12 @@ def draw_box_plot():
     # Quero que os meses apareçam na ordem correta: Jan, Feb, Mar, etc.
     month_order = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     
-    # Draw box plots (using Seaborn)
+    
     # Vou criar dois gráficos de caixa lado a lado
     # O parâmetro (1, 2) indica 1 linha e 2 colunas de subplots
     fig, axes = plt.subplots(1, 2, figsize=(20, 8))
     
-    # Primeiro gráfico - tendência anual
+    
     # O boxplot mostra a distribuição dos dados para cada ano
     # Cada caixa mostra: mediana, quartis, valores mínimos/máximos e outliers
     sns.boxplot(x='year', y='value', data=df_box, ax=axes[0])
@@ -115,7 +114,7 @@ def draw_box_plot():
     axes[0].set_xlabel('Year')  # Rótulo do eixo X
     axes[0].set_ylabel('Page Views')  # Rótulo do eixo Y
     
-    # Segundo gráfico - sazonalidade mensal
+    
     # O parâmetro order=month_order garante que os meses apareçam na ordem cronológica
     # e não em ordem alfabética
     sns.boxplot(x='month', y='value', data=df_box, ax=axes[1], order=month_order)
@@ -123,6 +122,6 @@ def draw_box_plot():
     axes[1].set_xlabel('Month')  # Rótulo do eixo X
     axes[1].set_ylabel('Page Views')  # Rótulo do eixo Y
     
-    # Save image and return fig (don't change this part)
+    
     fig.savefig('box_plot.png')
     return fig
